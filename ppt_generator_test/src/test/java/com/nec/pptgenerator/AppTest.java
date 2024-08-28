@@ -1,38 +1,42 @@
 package com.nec.pptgenerator;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
+import java.io.File;
+
+public class AppTest {
+    private App app;
+
+    @Before
+    public void setUp() {
+        app = new App();
+        app.setup();
     }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
+    @Test
+    public void testPPTGenerationAndDownload() {
+        // Generate the PPT using the method in App.java
+        app.generatePPT();
+
+        // Wait for download
+        try {
+            Thread.sleep(5000); // Adjust the sleep time as needed
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Check if the PPT file exists in the download directory
+        String downloadDir = System.getProperty("user.home") + "/Downloads/";
+        String expectedFileName = "translated_presentation.pptx";
+        File downloadedFile = new File(downloadDir + expectedFileName);
+        assertTrue("The PPT file should be downloaded", downloadedFile.exists());
     }
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
+    @After
+    public void tearDown() {
+        app.teardown();
     }
 }
